@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
     {
         if (user.UserName != userInfo.UserName)
         {
-            return BadRequest("User not found");
+            return Unauthorized("The username or password given is incorrect");
         }
 
         if (VerifyPasswordHash(userInfo.Password, user.PasswordHash, user.PasswordSalt) is false)
