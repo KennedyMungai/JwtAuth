@@ -44,8 +44,8 @@ public class AuthController : ControllerBase
 
     private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
     {
-        using var hmac = new HMACSHA512(user.PasswordSalt);
+        using var hmac = new HMACSHA512(passwordSalt);
         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        return computedHash.SequenceEqual(user.PasswordHash);
+        return computedHash.SequenceEqual(passwordHash);
     }
 }
