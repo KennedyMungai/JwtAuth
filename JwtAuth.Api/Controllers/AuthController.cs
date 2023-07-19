@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
 
         string token = CreateToken(user);
 
-        return Ok("Token");
+        return Ok(token);
     }
 
 
