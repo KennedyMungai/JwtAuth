@@ -31,6 +31,11 @@ public class AuthController : ControllerBase
             return BadRequest("User not found");
         }
 
+        if (VerifyPasswordHash(userInfo.Password, user.PasswordHash, user.PasswordSalt) is false)
+        {
+            return Unauthorized("The username or password given is incorrect");
+        }
+
         return Ok("Token");
     }
 
