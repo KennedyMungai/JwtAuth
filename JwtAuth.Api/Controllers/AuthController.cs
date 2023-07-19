@@ -36,6 +36,8 @@ public class AuthController : ControllerBase
             return Unauthorized("The username or password given is incorrect");
         }
 
+        string token = CreateToken(user);
+
         return Ok("Token");
     }
 
@@ -52,5 +54,10 @@ public class AuthController : ControllerBase
         using var hmac = new HMACSHA512(passwordSalt);
         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         return computedHash.SequenceEqual(passwordHash);
+    }
+
+    private string CreateToken(User user)
+    {
+        return string.Empty;
     }
 }
