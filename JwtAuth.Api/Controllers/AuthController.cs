@@ -2,6 +2,9 @@ using JwtAuth.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using JwtAuth.Api.Models.Dtos;
 using System.Security.Cryptography;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace JwtAuth.Api.Controllers;
 
@@ -11,6 +14,12 @@ namespace JwtAuth.Api.Controllers;
 public class AuthController : ControllerBase
 {
     public static User user = new();
+    private readonly IConfiguration _config;
+
+    public AuthController(IConfiguration config)
+    {
+        _config = config;
+    }
 
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register([FromBody] UserDto userInfo)
@@ -58,6 +67,19 @@ public class AuthController : ControllerBase
 
     private string CreateToken(User user)
     {
-        return string.Empty;
+        List<Claim> claims = new()
+        {
+            new Claim(ClaimTypes.Name, user.UserName)
+        };
+
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: creds);
+
+        string jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return jwt;
     }
 }
